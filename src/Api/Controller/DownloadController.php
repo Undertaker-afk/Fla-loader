@@ -103,7 +103,8 @@ class DownloadController implements RequestHandlerInterface
             ], 500);
         }
 
-        // Open file stream - Laminas Stream takes ownership and will close when done
+        // Open file stream - The Stream object manages the file handle lifecycle
+        // and will automatically close it via __destruct() when the stream is no longer referenced
         $fileHandle = fopen($file->path, 'r');
         if (!$fileHandle) {
             return new JsonResponse([
