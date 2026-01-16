@@ -139,6 +139,9 @@ def main():
     """Example usage"""
     
     # Configuration
+    # NOTE: For real applications, avoid hardcoding credentials in source code.
+    #       Prefer using environment variables (e.g., os.getenv("FLA_USERNAME"), os.getenv("FLA_PASSWORD"))
+    #       or a separate configuration file that is not committed to version control.
     FORUM_URL = "https://forum.example.com"  # Change this to your forum URL
     USERNAME = "your_username"                 # Change this to your username
     PASSWORD = "your_password"                 # Change this to your password
