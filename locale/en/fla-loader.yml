@@ -1,0 +1,22 @@
+undertaker-fla-loader:
+  admin:
+    settings:
+      title: Fla Loader Settings
+      file_management: File Management
+      role_assignment: Time-Limited Role Assignment
+      upload_file: Upload File
+      user_id: User ID
+      group: Group
+      duration: Duration
+      assign_role: Assign Role
+      file_uploaded: File uploaded successfully
+      file_deleted: File deleted successfully
+      role_assigned: Role assigned successfully
+      fill_all_fields: Please fill in all fields
+    permissions:
+      manage_files: Manage Fla Loader files
+  forum:
+    download: Download
+    downloads: Downloads
+    no_files: No files available for download.
+    download_button: Download
