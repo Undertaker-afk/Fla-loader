@@ -1,4 +1,5 @@
 import app from 'flarum/admin/app';
+import FlaLoaderPage from './components/FlaLoaderPage';
 
 app.initializers.add('undertaker/fla-loader', () => {
   app.extensionData
@@ -26,13 +27,7 @@ app.initializers.add('undertaker/fla-loader', () => {
       'moderate'
     )
     .registerPage({
+      component: FlaLoaderPage,
       path: '/fla-loader',
-      label: 'Fla Loader',
-      icon: 'fas fa-download'
     });
-
-  app.routes['flaLoader'] = {
-    path: '/fla-loader',
-    component: () => import('./components/FlaLoaderPage'),
-  };
 });

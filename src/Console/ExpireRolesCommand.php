@@ -12,6 +12,14 @@ class ExpireRolesCommand extends AbstractCommand
     protected $signature = 'fla-loader:expire-roles';
     protected $description = 'Remove expired role assignments';
 
+    /**
+     * @return void
+     */
+    protected function fire()
+    {
+        $this->handle();
+    }
+
     public function handle()
     {
         $this->info('Checking for expired roles...');
