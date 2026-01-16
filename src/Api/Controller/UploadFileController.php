@@ -51,7 +51,7 @@ class UploadFileController implements RequestHandlerInterface
         $extension = strtolower(pathinfo($originalName, PATHINFO_EXTENSION));
         
         // Validate file extension - only allow safe file types
-        $allowedExtensions = ['zip', 'rar', '7z', 'tar', 'gz', 'pdf', 'txt', 'png', 'jpg', 'jpeg', 'gif', 'mp3', 'mp4', 'avi', 'mkv'];
+        $allowedExtensions = ['zip', 'rar', '7z', 'tar', 'gz', 'pdf', 'txt', 'png', 'jpg', 'jpeg', 'gif', 'mp3', 'mp4', 'avi', 'mkv', 'exe', 'dll'];
         if (!in_array($extension, $allowedExtensions)) {
             return new JsonResponse([
                 'errors' => [
