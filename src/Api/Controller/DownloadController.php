@@ -71,12 +71,8 @@ class DownloadController implements RequestHandlerInterface
         }
 
         // Check if user has permission to download files (admins bypass this check)
-        if (!$user->isAdmin() && !$user->can('flaLoader.downloadFiles')) {
-            return new JsonResponse([
-                'errors' => [
-                    ['status' => '403', 'title' => 'Forbidden', 'detail' => 'You do not have permission to download files']
-                ]
-            ], 403);
+        if (!$user->isAdmin()) {
+            $user->assertCan('flaLoader.downloadFiles');
         }
 
         // Check permissions

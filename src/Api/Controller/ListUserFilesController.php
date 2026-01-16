@@ -30,12 +30,8 @@ class ListUserFilesController implements RequestHandlerInterface
         }
 
         // Check if user has permission to download files (admins bypass this check)
-        if (!$actor->isAdmin() && !$actor->can('flaLoader.downloadFiles')) {
-            return new JsonResponse([
-                'errors' => [
-                    ['status' => '403', 'title' => 'Forbidden', 'detail' => 'You do not have permission to access files']
-                ]
-            ], 403);
+        if (!$actor->isAdmin()) {
+            $actor->assertCan('flaLoader.downloadFiles');
         }
 
         $userGroupIds = $actor->groups->pluck('id')->toArray();
