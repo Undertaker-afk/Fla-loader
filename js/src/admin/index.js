@@ -29,5 +29,7 @@ app.initializers.add('undertaker/fla-loader', () => {
     .registerPage({
       component: FlaLoaderPage,
       path: '/fla-loader',
+      label: 'Fla Loader',
+      icon: 'fas fa-download'
     });
 });
