@@ -11,7 +11,7 @@ reviews:
 
   auto_review:
     enabled: true           # Auto-Review für alle PRs aktiv
-    drafts: false           # Draft-PRs überspringen
+    drafts: true           # Draft-PRs überspringen
 
     # WICHTIG: keine Bots in ignore_usernames eintragen,
     # damit auch AI/Bot-PRs reviewed werden.
