@@ -11,6 +11,14 @@ class CleanupSessionsCommand extends AbstractCommand
     protected $signature = 'fla-loader:cleanup-sessions';
     protected $description = 'Remove expired session tokens';
 
+    /**
+     * @return void
+     */
+    protected function fire()
+    {
+        $this->handle();
+    }
+
     public function handle()
     {
         $this->info('Cleaning up expired session tokens...');
