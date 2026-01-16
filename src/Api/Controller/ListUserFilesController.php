@@ -29,6 +29,11 @@ class ListUserFilesController implements RequestHandlerInterface
             ], 401);
         }
 
+        // Check if user has permission to download files (admins bypass this check)
+        if (!$actor->isAdmin()) {
+            $actor->assertCan('flaLoader.downloadFiles');
+        }
+
         $userGroupIds = $actor->groups->pluck('id')->toArray();
 
         $files = \Illuminate\Support\Facades\DB::table('fla_loader_files')

@@ -16,11 +16,7 @@ class DeleteFileController implements RequestHandlerInterface
         $actor = RequestUtil::getActor($request);
         
         if (!$actor->isAdmin()) {
-            return new JsonResponse([
-                'errors' => [
-                    ['status' => '403', 'title' => 'Forbidden', 'detail' => 'You do not have permission to delete files']
-                ]
-            ], 403);
+            $actor->assertCan('flaLoader.manageFiles');
         }
 
         $fileId = Arr::get($request->getQueryParams(), 'id');

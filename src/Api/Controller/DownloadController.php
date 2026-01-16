@@ -70,6 +70,11 @@ class DownloadController implements RequestHandlerInterface
             ], 401);
         }
 
+        // Check if user has permission to download files (admins bypass this check)
+        if (!$user->isAdmin()) {
+            $user->assertCan('flaLoader.downloadFiles');
+        }
+
         // Check permissions
         // If allowed_groups is null or an empty array, file is accessible to all authenticated users
         // If allowed_groups contains group IDs, user must be in at least one of those groups
