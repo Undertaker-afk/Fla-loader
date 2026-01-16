@@ -13,8 +13,11 @@ undertaker-fla-loader:
       file_deleted: File deleted successfully
       role_assigned: Role assigned successfully
       fill_all_fields: Please fill in all fields
+      public_file_id_label: Public File ID
+      public_file_id_help: The ID of the file to display on the downloads page (optional)
     permissions:
       manage_files: Manage Fla Loader files
+      download_files: Download files from Fla Loader
   forum:
     download: Download
     downloads: Downloads
