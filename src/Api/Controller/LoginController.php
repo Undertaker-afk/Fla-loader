@@ -15,6 +15,12 @@ use Carbon\Carbon;
 
 class LoginController implements RequestHandlerInterface
 {
+    /**
+     * Handle login request and generate session token
+     * 
+     * Note: Consider implementing rate limiting to prevent brute force attacks.
+     * This can be done using Flarum's throttle middleware or a custom solution.
+     */
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
         $body = $request->getParsedBody();

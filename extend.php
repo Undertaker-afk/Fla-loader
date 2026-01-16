@@ -32,7 +32,8 @@ return [
         ->serializeToForum('flaLoader.publicFileId', 'fla-loader.public_file_id'),
 
     (new Extend\Console())
-        ->command(Undertaker\FlaLoader\Console\ExpireRolesCommand::class),
+        ->command(Undertaker\FlaLoader\Console\ExpireRolesCommand::class)
+        ->command(Undertaker\FlaLoader\Console\CleanupSessionsCommand::class),
 
     (new Extend\ServiceProvider())
         ->register(Undertaker\FlaLoader\FlaLoaderServiceProvider::class),

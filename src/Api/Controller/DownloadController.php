@@ -95,8 +95,26 @@ class DownloadController implements RequestHandlerInterface
             ], 404);
         }
 
+        if (!is_readable($file->path)) {
+            return new JsonResponse([
+                'errors' => [
+                    ['status' => '500', 'title' => 'Internal Server Error', 'detail' => 'File is not readable']
+                ]
+            ], 500);
+        }
+
+        // Open file stream
+        $fileHandle = fopen($file->path, 'r');
+        if (!$fileHandle) {
+            return new JsonResponse([
+                'errors' => [
+                    ['status' => '500', 'title' => 'Internal Server Error', 'detail' => 'Failed to open file']
+                ]
+            ], 500);
+        }
+
         $response = new \Laminas\Diactoros\Response();
-        $stream = new \Laminas\Diactoros\Stream($file->path);
+        $stream = new \Laminas\Diactoros\Stream($fileHandle);
 
         return $response
             ->withBody($stream)
