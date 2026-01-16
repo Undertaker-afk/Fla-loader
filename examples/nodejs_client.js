@@ -135,6 +135,10 @@ class FlaLoaderClient {
                         console.log(`\n✗ Write error: ${err.message}`);
                         reject(false);
                     });
+                    response.data.on('error', (err) => {
+                        console.log(`\n✗ Download stream error: ${err.message}`);
+                        reject(false);
+                    });
                     response.data.pipe(writer);
                 });
             }
