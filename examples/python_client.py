@@ -8,7 +8,6 @@ Requirements:
 """
 
 import requests
-import json
 import os
 from typing import Optional, Dict, List
 
