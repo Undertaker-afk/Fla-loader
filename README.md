@@ -28,13 +28,6 @@ A Flarum extension for external loader integration with time-limited roles and f
    php flarum migrate
    ```
 
-4. Build assets:
-   ```bash
-   cd vendor/undertaker/fla-loader
-   npm install
-   npm run build
-   ```
-
 ## API Endpoints
 
 ### Login
@@ -68,6 +61,25 @@ A Flarum extension for external loader integration with time-limited roles and f
 
 - `php flarum fla-loader:expire-roles` - Manually expire roles (should be run via cron)
 - `php flarum fla-loader:cleanup-sessions` - Clean up expired session tokens
+
+## Development
+
+If you want to modify the extension's JavaScript code:
+
+1. Clone the repository
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Make your changes to files in `js/src/`
+4. Build the assets:
+   ```bash
+   npm run build
+   ```
+   Or use development mode with auto-rebuild:
+   ```bash
+   npm run dev
+   ```
 
 ## License
 
