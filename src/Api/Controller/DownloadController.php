@@ -71,9 +71,11 @@ class DownloadController implements RequestHandlerInterface
         }
 
         // Check permissions
-        $allowedGroups = json_decode($file->allowed_groups, true) ?? [];
+        // If allowed_groups is null or an empty array, file is accessible to all authenticated users
+        // If allowed_groups contains group IDs, user must be in at least one of those groups
+        $allowedGroups = json_decode($file->allowed_groups, true);
         
-        if (!empty($allowedGroups)) {
+        if (is_array($allowedGroups) && !empty($allowedGroups)) {
             $userGroupIds = $user->groups->pluck('id')->toArray();
             $hasAccess = !empty(array_intersect($userGroupIds, $allowedGroups));
             
@@ -117,10 +119,13 @@ class DownloadController implements RequestHandlerInterface
         $response = new \Laminas\Diactoros\Response();
         $stream = new \Laminas\Diactoros\Stream($fileHandle);
 
+        // Sanitize filename for Content-Disposition header to prevent header injection
+        $safeFilename = preg_replace('/[^a-zA-Z0-9_\-\.]/', '_', $file->original_name);
+        
         return $response
             ->withBody($stream)
             ->withHeader('Content-Type', $file->mime_type)
-            ->withHeader('Content-Disposition', 'attachment; filename="' . $file->original_name . '"')
+            ->withHeader('Content-Disposition', 'attachment; filename="' . $safeFilename . '"')
             ->withHeader('Content-Length', (string) $file->size);
     }
 }

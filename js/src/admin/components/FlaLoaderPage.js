@@ -18,8 +18,15 @@ export default class FlaLoaderPage extends Component {
     // File upload state
     this.uploadFileIsPublic = false;
     this.uploadFileGroups = [];
+    this.fileInputRef = null;
+    this.hwidUserIdRef = null;
     
     this.loadData();
+  }
+  
+  oncreate(vnode) {
+    super.oncreate(vnode);
+    this.element = vnode.dom;
   }
 
   loadData() {
@@ -55,7 +62,7 @@ export default class FlaLoaderPage extends Component {
                 <label>Upload File</label>
                 <input
                   type="file"
-                  id="fileUpload"
+                  oncreate={(vnode) => { this.fileInputRef = vnode.dom; }}
                 />
               </div>
               
@@ -197,7 +204,7 @@ export default class FlaLoaderPage extends Component {
                 <input
                   type="number"
                   className="FormControl"
-                  id="hwidUserId"
+                  oncreate={(vnode) => { this.hwidUserIdRef = vnode.dom; }}
                   placeholder="Enter user ID to check or reset HWID"
                 />
               </div>
@@ -227,8 +234,7 @@ export default class FlaLoaderPage extends Component {
   }
 
   uploadFile() {
-    const fileInput = document.getElementById('fileUpload');
-    const file = fileInput && fileInput.files[0];
+    const file = this.fileInputRef && this.fileInputRef.files[0];
     
     if (!file) {
       app.alerts.show({ type: 'error' }, 'Please select a file to upload');
@@ -248,7 +254,7 @@ export default class FlaLoaderPage extends Component {
     }).then(() => {
       app.alerts.show({ type: 'success' }, 'File uploaded successfully');
       // Reset form
-      if (fileInput) fileInput.value = '';
+      if (this.fileInputRef) this.fileInputRef.value = '';
       this.uploadFileIsPublic = false;
       this.uploadFileGroups = [];
       this.loadData();
@@ -297,8 +303,7 @@ export default class FlaLoaderPage extends Component {
   }
 
   checkHwid() {
-    const userIdInput = document.getElementById('hwidUserId');
-    const userId = userIdInput ? userIdInput.value : null;
+    const userId = this.hwidUserIdRef ? this.hwidUserIdRef.value : null;
 
     if (!userId) {
       app.alerts.show({ type: 'error' }, 'Please enter a user ID');
@@ -310,7 +315,7 @@ export default class FlaLoaderPage extends Component {
       url: app.forum.attribute('apiUrl') + '/fla-loader/hwid/' + userId,
     }).then((response) => {
       const data = response.data;
-      const statusDiv = document.getElementById('hwidStatus');
+      const statusDiv = this.element && this.element.querySelector('#hwidStatus');
       
       if (statusDiv) {
         statusDiv.innerHTML = `
@@ -330,8 +335,7 @@ export default class FlaLoaderPage extends Component {
   }
 
   resetHwid() {
-    const userIdInput = document.getElementById('hwidUserId');
-    const userId = userIdInput ? userIdInput.value : null;
+    const userId = this.hwidUserIdRef ? this.hwidUserIdRef.value : null;
 
     if (!userId) {
       app.alerts.show({ type: 'error' }, 'Please enter a user ID');
@@ -351,14 +355,14 @@ export default class FlaLoaderPage extends Component {
       app.alerts.show({ type: 'success' }, data.message);
       
       // Clear the status display
-      const statusDiv = document.getElementById('hwidStatus');
+      const statusDiv = this.element && this.element.querySelector('#hwidStatus');
       if (statusDiv) {
         statusDiv.innerHTML = '';
       }
       
       // Clear the input
-      if (userIdInput) {
-        userIdInput.value = '';
+      if (this.hwidUserIdRef) {
+        this.hwidUserIdRef.value = '';
       }
     }).catch(() => {
       app.alerts.show({ type: 'error' }, 'Failed to reset HWID');

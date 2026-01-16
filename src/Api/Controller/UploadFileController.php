@@ -48,7 +48,18 @@ class UploadFileController implements RequestHandlerInterface
 
         // Generate unique filename
         $originalName = $file->getClientFilename();
-        $extension = pathinfo($originalName, PATHINFO_EXTENSION);
+        $extension = strtolower(pathinfo($originalName, PATHINFO_EXTENSION));
+        
+        // Validate file extension - only allow safe file types
+        $allowedExtensions = ['zip', 'rar', '7z', 'tar', 'gz', 'pdf', 'txt', 'png', 'jpg', 'jpeg', 'gif', 'mp3', 'mp4', 'avi', 'mkv'];
+        if (!in_array($extension, $allowedExtensions)) {
+            return new JsonResponse([
+                'errors' => [
+                    ['status' => '400', 'title' => 'Bad Request', 'detail' => 'File type not allowed. Allowed types: ' . implode(', ', $allowedExtensions)]
+                ]
+            ], 400);
+        }
+        
         $filename = Str::random(32) . '.' . $extension;
         $path = $storagePath . '/' . $filename;
 

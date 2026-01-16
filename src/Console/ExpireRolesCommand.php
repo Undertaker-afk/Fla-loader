@@ -22,22 +22,35 @@ class ExpireRolesCommand extends AbstractCommand
             ->get();
 
         $count = 0;
+        
+        if ($expiredAssignments->isEmpty()) {
+            $this->info("No expired role assignments found.");
+            return;
+        }
+        
+        // Collect all user-group pairs for batch detachment
+        $detachments = [];
+        $assignmentIds = [];
+        
         foreach ($expiredAssignments as $assignment) {
-            $user = User::find($assignment->user_id);
-            
+            $detachments[$assignment->user_id][] = $assignment->group_id;
+            $assignmentIds[] = $assignment->id;
+            $count++;
+        }
+        
+        // Batch detach groups from users
+        foreach ($detachments as $userId => $groupIds) {
+            $user = User::find($userId);
             if ($user) {
-                // Remove user from group
-                $user->groups()->detach($assignment->group_id);
-                
-                // Delete assignment record
-                DB::table('fla_loader_role_assignments')
-                    ->where('id', $assignment->id)
-                    ->delete();
-                
-                $count++;
-                $this->info("Removed expired role for user {$user->username} (group ID: {$assignment->group_id})");
+                $user->groups()->detach($groupIds);
+                $this->info("Removed expired roles for user {$user->username} (" . count($groupIds) . " group(s))");
             }
         }
+        
+        // Batch delete assignment records
+        DB::table('fla_loader_role_assignments')
+            ->whereIn('id', $assignmentIds)
+            ->delete();
 
         $this->info("Expired {$count} role assignment(s).");
     }

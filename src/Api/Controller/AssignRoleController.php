@@ -88,6 +88,11 @@ class AssignRoleController implements RequestHandlerInterface
                     'expires_at' => $expiresAt,
                     'updated_at' => Carbon::now(),
                 ]);
+            
+            // Ensure user is in the group (in case they were manually removed)
+            if (!$user->groups->contains($groupId)) {
+                $user->groups()->attach($groupId);
+            }
         } else {
             // Create new assignment
             \Illuminate\Support\Facades\DB::table('fla_loader_role_assignments')->insert([
