@@ -1,0 +1,24 @@
+# yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
+
+language: "en-US"
+early_access: false
+
+reviews:
+  profile: "chill"          # oder "strict", "balanced", etc.
+  request_changes_workflow: false
+  high_level_summary: true
+  review_status: true
+
+  auto_review:
+    enabled: true           # Auto-Review für alle PRs aktiv
+    drafts: false           # Draft-PRs überspringen
+
+    # WICHTIG: keine Bots in ignore_usernames eintragen,
+    # damit auch AI/Bot-PRs reviewed werden.
+    # ignore_usernames:
+    #   - "dependabot[bot]"
+    #   - "renovate[bot]"
+    #   - "github-actions[bot]"
+
+chat:
+  auto_reply: true
