@@ -2,6 +2,7 @@ import app from 'flarum/forum/app';
 import { extend } from 'flarum/common/extend';
 import HeaderSecondary from 'flarum/forum/components/HeaderSecondary';
 import LinkButton from 'flarum/common/components/LinkButton';
+import DownloadPage from './components/DownloadPage';
 
 app.initializers.add('undertaker/fla-loader', () => {
   // Add "Download" link to navbar
@@ -23,6 +24,6 @@ app.initializers.add('undertaker/fla-loader', () => {
   // Register download page route
   app.routes.flaLoaderDownload = {
     path: '/download',
-    component: () => import('./components/DownloadPage'),
+    component: DownloadPage,
   };
 });
