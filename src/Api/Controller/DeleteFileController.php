@@ -42,8 +42,14 @@ class DeleteFileController implements RequestHandlerInterface
         }
 
         // Delete physical file
-        if (file_exists($file->path)) {
-            unlink($file->path);
+        $storageRoot = realpath(storage_path());
+        $fileRealPath = $file->path !== null ? realpath($file->path) : false;
+
+        if ($storageRoot !== false && $fileRealPath !== false) {
+            $storageRoot = rtrim($storageRoot, DIRECTORY_SEPARATOR);
+            if (strpos($fileRealPath, $storageRoot . DIRECTORY_SEPARATOR) === 0 && file_exists($fileRealPath)) {
+                unlink($fileRealPath);
+            }
         }
 
         // Delete from database
