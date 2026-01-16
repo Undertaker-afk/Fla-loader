@@ -15,7 +15,7 @@ class DeleteFileController implements RequestHandlerInterface
     {
         $actor = RequestUtil::getActor($request);
         
-        if (!$actor->hasPermission('flaLoader.manageFiles')) {
+        if (!$actor->isAdmin()) {
             return new JsonResponse([
                 'errors' => [
                     ['status' => '403', 'title' => 'Forbidden', 'detail' => 'You do not have permission to delete files']
@@ -24,6 +24,10 @@ class DeleteFileController implements RequestHandlerInterface
         }
 
         $fileId = Arr::get($request->getQueryParams(), 'id');
+        if (!$fileId) {
+            // Try to get from route parameters
+            $fileId = Arr::get($request->getAttribute('routeParams', []), 'id');
+        }
 
         $file = \Illuminate\Support\Facades\DB::table('fla_loader_files')
             ->where('id', $fileId)

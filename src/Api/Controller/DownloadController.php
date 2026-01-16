@@ -17,6 +17,10 @@ class DownloadController implements RequestHandlerInterface
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
         $fileId = Arr::get($request->getQueryParams(), 'id');
+        if (!$fileId) {
+            // Try to get from route parameters
+            $fileId = Arr::get($request->getAttribute('routeParams', []), 'id');
+        }
         $token = Arr::get($request->getQueryParams(), 'token');
 
         if (!$fileId) {

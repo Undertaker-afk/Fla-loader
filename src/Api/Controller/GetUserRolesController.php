@@ -25,6 +25,10 @@ class GetUserRolesController implements RequestHandlerInterface
         }
 
         $userId = Arr::get($request->getQueryParams(), 'userId');
+        if (!$userId) {
+            // Try to get from route parameters
+            $userId = Arr::get($request->getAttribute('routeParams', []), 'userId');
+        }
 
         if (!$userId) {
             return new JsonResponse([

@@ -14,7 +14,7 @@ class ListFilesController implements RequestHandlerInterface
     {
         $actor = RequestUtil::getActor($request);
         
-        if (!$actor->hasPermission('flaLoader.manageFiles')) {
+        if (!$actor->isAdmin()) {
             return new JsonResponse([
                 'errors' => [
                     ['status' => '403', 'title' => 'Forbidden', 'detail' => 'You do not have permission to manage files']

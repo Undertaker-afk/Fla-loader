@@ -36,4 +36,7 @@ return [
 
     (new Extend\ServiceProvider())
         ->register(Undertaker\FlaLoader\FlaLoaderServiceProvider::class),
+
+    (new Extend\User())
+        ->registerPreference('flaLoader.allowDownloads', 'boolval', true),
 ];
