@@ -18,8 +18,11 @@ class LoginController implements RequestHandlerInterface
     /**
      * Handle login request and generate session token
      * 
-     * Note: Consider implementing rate limiting to prevent brute force attacks.
-     * This can be done using Flarum's throttle middleware or a custom solution.
+     * Authenticates a user with username/password and returns a session token
+     * valid for 30 days along with user data and group memberships.
+     * 
+     * @param ServerRequestInterface $request The HTTP request
+     * @return ResponseInterface JSON response with token and user data
      */
     public function handle(ServerRequestInterface $request): ResponseInterface
     {

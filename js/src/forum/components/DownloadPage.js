@@ -13,13 +13,26 @@ export default class DownloadPage extends Page {
   }
 
   loadFiles() {
-    // For now, we'll fetch files that are marked as public
+    // Fetch files from the API - the backend will filter based on permissions
     app.request({
       method: 'GET',
       url: app.forum.attribute('apiUrl') + '/fla-loader/files',
     }).then((response) => {
-      // Filter to only show files user has access to
-      this.files = (response.data || []).filter(file => file.isPublic);
+      const currentUser = app.session.user;
+      const userGroupIds = currentUser ? currentUser.groups().map(g => g.id()) : [];
+      
+      // Filter files: show public files OR files where user has required group
+      this.files = (response.data || []).filter(file => {
+        if (file.isPublic) {
+          return true;
+        }
+        // If file has group restrictions, check if user has at least one required group
+        if (file.allowedGroups && file.allowedGroups.length > 0) {
+          return file.allowedGroups.some(groupId => userGroupIds.includes(groupId));
+        }
+        return false;
+      });
+      
       this.loading = false;
       m.redraw();
     }).catch(() => {
