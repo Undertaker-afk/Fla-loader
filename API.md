@@ -13,15 +13,18 @@ The extension provides two methods of authentication:
 
 **Endpoint:** `POST /api/fla-loader/login`
 
-**Description:** Authenticate a user and receive a session token
+**Description:** Authenticate a user and receive a session token. **Now includes HWID validation.**
 
 **Request Body:**
 ```json
 {
   "username": "john_doe",
-  "password": "secure_password"
+  "password": "secure_password",
+  "hwid": "unique-hardware-id-string"
 }
 ```
+
+**Note:** The `hwid` parameter is **required**. On first login, the HWID will be registered for the user. On subsequent logins, the HWID must match the registered value.
 
 **Response (200 OK):**
 ```json
@@ -56,6 +59,19 @@ The extension provides two methods of authentication:
       "status": "401",
       "title": "Unauthorized",
       "detail": "Invalid credentials"
+    }
+  ]
+}
+```
+
+**Error Response (403 Forbidden - HWID Mismatch):**
+```json
+{
+  "errors": [
+    {
+      "status": "403",
+      "title": "Forbidden",
+      "detail": "HWID mismatch. Please contact an administrator to reset your HWID."
     }
   ]
 }
@@ -234,17 +250,69 @@ The extension provides two methods of authentication:
 }
 ```
 
+### 9. Reset User HWID (Admin Only)
+
+**Endpoint:** `POST /api/fla-loader/hwid/reset`
+
+**Description:** Reset a user's hardware ID so they can login from a new device
+
+**Authentication:** Admin only
+
+**Request Body:**
+```json
+{
+  "userId": 5
+}
+```
+
+**Response (200 OK):**
+```json
+{
+  "data": {
+    "userId": 5,
+    "username": "john_doe",
+    "hwidReset": true,
+    "message": "HWID reset successfully. User can now login from a new device."
+  }
+}
+```
+
+### 10. Get User HWID Status (Admin Only)
+
+**Endpoint:** `GET /api/fla-loader/hwid/{userId}`
+
+**Description:** Check if a user has an HWID registered and view partial HWID info
+
+**Authentication:** Admin only
+
+**URL Parameters:**
+- `userId` (required): User ID
+
+**Response (200 OK):**
+```json
+{
+  "data": {
+    "userId": 5,
+    "username": "john_doe",
+    "hasHwid": true,
+    "hwid": "abc12345...",
+    "registeredAt": "2024-01-15T10:00:00Z"
+  }
+}
+```
+
 ## Usage Examples
 
 ### Example 1: External Loader Login Flow
 
 ```bash
-# Step 1: Login
+# Step 1: Login with HWID
 curl -X POST https://forum.example.com/api/fla-loader/login \
   -H "Content-Type: application/json" \
   -d '{
     "username": "player123",
-    "password": "secure_pass"
+    "password": "secure_pass",
+    "hwid": "unique-hardware-identifier"
   }'
 
 # Response will include token and groups

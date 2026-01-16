@@ -29,6 +29,10 @@ return [
         ->post('/fla-loader/roles', 'fla-loader.roles.assign', Controller\AssignRoleController::class)
         ->get('/fla-loader/roles/{userId}', 'fla-loader.roles.get', Controller\GetUserRolesController::class),
 
+    (new Extend\Routes('api'))
+        ->post('/fla-loader/hwid/reset', 'fla-loader.hwid.reset', Controller\ResetHwidController::class)
+        ->get('/fla-loader/hwid/{userId}', 'fla-loader.hwid.get', Controller\GetHwidController::class),
+
     (new Extend\Settings())
         ->serializeToForum('flaLoader.publicFileId', 'fla-loader.public_file_id'),
 

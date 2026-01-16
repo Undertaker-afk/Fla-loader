@@ -5,12 +5,14 @@ A Flarum extension for external loader integration with time-limited roles and f
 ## Features
 
 - **External Login API**: Authenticate users via external loaders using username/password and receive session tokens
+  - **HWID Protection**: Hardware ID validation to prevent account sharing (automatically registered on first login)
 - **Time-Limited Role Assignment**: Admins can assign roles with expiration times (7 days, 30 days, 180 days, 1 year, or lifetime)
 - **File Management System**: 
   - Upload files with role-based access control
   - Download navbar entry for user-accessible files
   - API endpoint for external loader downloads with session token authentication
   - Admin interface for managing files and permissions
+- **HWID Management**: Admins can reset user HWIDs to allow login from new devices
 
 ## Installation
 
@@ -37,8 +39,9 @@ A Flarum extension for external loader integration with time-limited roles and f
 
 ### Login
 - **POST** `/api/fla-loader/login`
-  - Body: `{"username": "...", "password": "..."}`
+  - Body: `{"username": "...", "password": "...", "hwid": "..."}`
   - Returns: Session token and user groups/roles
+  - Note: HWID is required and validated
 
 ### File Download
 - **GET** `/api/fla-loader/download/{id}?token=...`
@@ -56,9 +59,15 @@ A Flarum extension for external loader integration with time-limited roles and f
   - Body: `{"userId": 1, "groupId": 2, "duration": "30d"}`
 - **GET** `/api/fla-loader/roles/{userId}` - Get user's role assignments
 
+### HWID Management (Admin only)
+- **POST** `/api/fla-loader/hwid/reset` - Reset a user's HWID
+  - Body: `{"userId": 1}`
+- **GET** `/api/fla-loader/hwid/{userId}` - Check user's HWID status
+
 ## Console Commands
 
 - `php flarum fla-loader:expire-roles` - Manually expire roles (should be run via cron)
+- `php flarum fla-loader:cleanup-sessions` - Clean up expired session tokens
 
 ## License
 

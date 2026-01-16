@@ -187,6 +187,40 @@ export default class FlaLoaderPage extends Component {
               </Button>
             </div>
           </div>
+
+          {/* HWID Management Section */}
+          <div className="FlaLoaderSection">
+            <h3>HWID Management</h3>
+            <div className="Form">
+              <div className="Form-group">
+                <label>User ID</label>
+                <input
+                  type="number"
+                  className="FormControl"
+                  id="hwidUserId"
+                  placeholder="Enter user ID to check or reset HWID"
+                />
+              </div>
+
+              <div style="display: flex; gap: 10px;">
+                <Button
+                  className="Button Button--primary"
+                  onclick={() => this.checkHwid()}
+                >
+                  Check HWID Status
+                </Button>
+                
+                <Button
+                  className="Button Button--warning"
+                  onclick={() => this.resetHwid()}
+                >
+                  Reset HWID
+                </Button>
+              </div>
+
+              <div id="hwidStatus" style="margin-top: 15px;"></div>
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -259,6 +293,75 @@ export default class FlaLoaderPage extends Component {
       m.redraw();
     }).catch(() => {
       app.alerts.show({ type: 'error' }, 'Failed to assign role');
+    });
+  }
+
+  checkHwid() {
+    const userIdInput = document.getElementById('hwidUserId');
+    const userId = userIdInput ? userIdInput.value : null;
+
+    if (!userId) {
+      app.alerts.show({ type: 'error' }, 'Please enter a user ID');
+      return;
+    }
+
+    app.request({
+      method: 'GET',
+      url: app.forum.attribute('apiUrl') + '/fla-loader/hwid/' + userId,
+    }).then((response) => {
+      const data = response.data;
+      const statusDiv = document.getElementById('hwidStatus');
+      
+      if (statusDiv) {
+        statusDiv.innerHTML = `
+          <div class="Alert Alert--info">
+            <strong>User:</strong> ${data.username}<br>
+            <strong>Has HWID:</strong> ${data.hasHwid ? 'Yes' : 'No'}<br>
+            ${data.hasHwid ? `<strong>HWID Preview:</strong> ${data.hwid}<br>` : ''}
+            ${data.registeredAt ? `<strong>Registered At:</strong> ${data.registeredAt}` : ''}
+          </div>
+        `;
+      }
+      
+      app.alerts.show({ type: 'success' }, 'HWID status retrieved');
+    }).catch((error) => {
+      app.alerts.show({ type: 'error' }, 'Failed to get HWID status');
+    });
+  }
+
+  resetHwid() {
+    const userIdInput = document.getElementById('hwidUserId');
+    const userId = userIdInput ? userIdInput.value : null;
+
+    if (!userId) {
+      app.alerts.show({ type: 'error' }, 'Please enter a user ID');
+      return;
+    }
+
+    if (!confirm('Are you sure you want to reset this user\'s HWID? They will be able to login from a new device.')) {
+      return;
+    }
+
+    app.request({
+      method: 'POST',
+      url: app.forum.attribute('apiUrl') + '/fla-loader/hwid/reset',
+      body: { userId: userId },
+    }).then((response) => {
+      const data = response.data;
+      app.alerts.show({ type: 'success' }, data.message);
+      
+      // Clear the status display
+      const statusDiv = document.getElementById('hwidStatus');
+      if (statusDiv) {
+        statusDiv.innerHTML = '';
+      }
+      
+      // Clear the input
+      if (userIdInput) {
+        userIdInput.value = '';
+      }
+    }).catch(() => {
+      app.alerts.show({ type: 'error' }, 'Failed to reset HWID');
     });
   }
 }

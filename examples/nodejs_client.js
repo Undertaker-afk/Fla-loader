@@ -28,11 +28,12 @@ class FlaLoaderClient {
      * Login and obtain a session token
      * @param {string} username - Username or email
      * @param {string} password - User password
+     * @param {string} hwid - Hardware ID (unique identifier for the device)
      * @returns {Promise<boolean>} True if login successful
      */
-    async login(username, password) {
+    async login(username, password, hwid) {
         const url = `${this.apiUrl}/fla-loader/login`;
-        const payload = { username, password };
+        const payload = { username, password, hwid };
 
         try {
             const response = await axios.post(url, payload);
@@ -156,6 +157,11 @@ async function main() {
     const PASSWORD = 'your_password';                 // Change this to your password
     const FILE_ID = 1;                                // Change this to the file ID
 
+    // Generate or retrieve HWID (in a real application, this should be a unique hardware identifier)
+    const crypto = require('crypto');
+    const os = require('os');
+    const HWID = crypto.createHash('sha256').update(`${os.hostname()}-${os.arch()}`).digest('hex');
+
     console.log('=== Fla-loader API Client Example ===\n');
 
     // Create client
@@ -163,7 +169,7 @@ async function main() {
 
     // Login
     console.log('1. Logging in...');
-    if (!await client.login(USERNAME, PASSWORD)) {
+    if (!await client.login(USERNAME, PASSWORD, HWID)) {
         console.log('\nLogin failed. Please check your credentials.');
         return;
     }

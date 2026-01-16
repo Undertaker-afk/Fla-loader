@@ -28,13 +28,14 @@ class FlaLoaderClient:
         self.user_data: Optional[Dict] = None
         self.user_groups: List[Dict] = []
     
-    def login(self, username: str, password: str) -> bool:
+    def login(self, username: str, password: str, hwid: str) -> bool:
         """
         Login and obtain a session token
         
         Args:
             username: Username or email
             password: User password
+            hwid: Hardware ID (unique identifier for the device)
             
         Returns:
             True if login successful, False otherwise
@@ -42,7 +43,8 @@ class FlaLoaderClient:
         url = f"{self.api_url}/fla-loader/login"
         payload = {
             "username": username,
-            "password": password
+            "password": password,
+            "hwid": hwid
         }
         
         try:
@@ -143,6 +145,11 @@ def main():
     PASSWORD = "your_password"                 # Change this to your password
     FILE_ID = 1                                # Change this to the file ID you want to download
     
+    # Generate or retrieve HWID (in a real application, this should be a unique hardware identifier)
+    import platform
+    import hashlib
+    HWID = hashlib.sha256(f"{platform.node()}-{platform.machine()}".encode()).hexdigest()
+    
     print("=== Fla-loader API Client Example ===\n")
     
     # Create client
@@ -150,7 +157,7 @@ def main():
     
     # Login
     print("1. Logging in...")
-    if not client.login(USERNAME, PASSWORD):
+    if not client.login(USERNAME, PASSWORD, HWID):
         print("\nLogin failed. Please check your credentials.")
         return
     
