@@ -24,11 +24,7 @@ class UpdateFileController implements RequestHandlerInterface
             ], 403);
         }
 
-        $fileId = Arr::get($request->getQueryParams(), 'id');
-        if (!$fileId) {
-            // Try to get from route parameters
-            $fileId = Arr::get($request->getAttribute('routeParams', []), 'id');
-        }
+        $fileId = Arr::get($request->getAttribute('routeParams', []), 'id');
         $body = $request->getParsedBody();
 
         $file = \Illuminate\Support\Facades\DB::table('fla_loader_files')

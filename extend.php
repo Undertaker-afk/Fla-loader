@@ -17,7 +17,8 @@ return [
     (new Extend\Routes('api'))
         ->post('/fla-loader/login', 'fla-loader.login', Controller\LoginController::class)
         ->get('/fla-loader/download/{id}', 'fla-loader.download', Controller\DownloadController::class)
-        ->get('/fla-loader/files', 'fla-loader.files.list', Controller\ListFilesController::class),
+        ->get('/fla-loader/files', 'fla-loader.files.list', Controller\ListFilesController::class)
+        ->get('/fla-loader/user-files', 'fla-loader.user-files.list', Controller\ListUserFilesController::class),
 
     (new Extend\Routes('api'))
         ->post('/fla-loader/files', 'fla-loader.files.upload', Controller\UploadFileController::class)

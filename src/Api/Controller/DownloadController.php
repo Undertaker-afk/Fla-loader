@@ -103,36 +103,23 @@ class DownloadController implements RequestHandlerInterface
             ], 500);
         }
 
-        // Open file stream and create response
-        // The Laminas Stream will take ownership of the file handle and close it when done
-        try {
-            $fileHandle = fopen($file->path, 'r');
-            if (!$fileHandle) {
-                return new JsonResponse([
-                    'errors' => [
-                        ['status' => '500', 'title' => 'Internal Server Error', 'detail' => 'Failed to open file']
-                    ]
-                ], 500);
-            }
-
-            $response = new \Laminas\Diactoros\Response();
-            $stream = new \Laminas\Diactoros\Stream($fileHandle);
-
-            return $response
-                ->withBody($stream)
-                ->withHeader('Content-Type', $file->mime_type)
-                ->withHeader('Content-Disposition', 'attachment; filename="' . $file->original_name . '"')
-                ->withHeader('Content-Length', (string) $file->size);
-        } catch (\Exception $e) {
-            // If any error occurs, close the file handle if it was opened
-            if (isset($fileHandle) && is_resource($fileHandle)) {
-                fclose($fileHandle);
-            }
+        // Open file stream - Laminas Stream takes ownership and will close when done
+        $fileHandle = fopen($file->path, 'r');
+        if (!$fileHandle) {
             return new JsonResponse([
                 'errors' => [
-                    ['status' => '500', 'title' => 'Internal Server Error', 'detail' => 'Error creating file stream']
+                    ['status' => '500', 'title' => 'Internal Server Error', 'detail' => 'Failed to open file']
                 ]
             ], 500);
         }
+
+        $response = new \Laminas\Diactoros\Response();
+        $stream = new \Laminas\Diactoros\Stream($fileHandle);
+
+        return $response
+            ->withBody($stream)
+            ->withHeader('Content-Type', $file->mime_type)
+            ->withHeader('Content-Disposition', 'attachment; filename="' . $file->original_name . '"')
+            ->withHeader('Content-Length', (string) $file->size);
     }
 }

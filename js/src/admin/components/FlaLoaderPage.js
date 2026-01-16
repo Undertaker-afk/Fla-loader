@@ -15,6 +15,10 @@ export default class FlaLoaderPage extends Component {
     this.selectedGroupId = null;
     this.selectedDuration = '30d';
     
+    // File upload state
+    this.uploadFileIsPublic = false;
+    this.uploadFileGroups = [];
+    
     this.loadData();
   }
 
@@ -51,9 +55,46 @@ export default class FlaLoaderPage extends Component {
                 <label>Upload File</label>
                 <input
                   type="file"
-                  onchange={(e) => this.uploadFile(e.target.files[0])}
+                  id="fileUpload"
                 />
               </div>
+              
+              <div className="Form-group">
+                <label>
+                  <input
+                    type="checkbox"
+                    checked={this.uploadFileIsPublic}
+                    onchange={(e) => { this.uploadFileIsPublic = e.target.checked; }}
+                  />
+                  {' '}Make file public (visible in Download page)
+                </label>
+              </div>
+              
+              <div className="Form-group">
+                <label>Allowed Groups (hold Ctrl/Cmd to select multiple)</label>
+                <select
+                  multiple
+                  className="FormControl"
+                  style="height: 120px;"
+                  onchange={(e) => {
+                    this.uploadFileGroups = Array.from(e.target.selectedOptions).map(o => parseInt(o.value));
+                  }}
+                >
+                  {this.groups.map((group) => (
+                    <option key={group.id()} value={group.id()}>
+                      {group.nameSingular()}
+                    </option>
+                  ))}
+                </select>
+                <small>Leave empty to allow all groups</small>
+              </div>
+              
+              <Button
+                className="Button Button--primary"
+                onclick={() => this.uploadFile()}
+              >
+                Upload File
+              </Button>
               
               <div className="FileList">
                 <h4>Uploaded Files</h4>
@@ -151,13 +192,19 @@ export default class FlaLoaderPage extends Component {
     );
   }
 
-  uploadFile(file) {
-    if (!file) return;
+  uploadFile() {
+    const fileInput = document.getElementById('fileUpload');
+    const file = fileInput && fileInput.files[0];
+    
+    if (!file) {
+      app.alerts.show({ type: 'error' }, 'Please select a file to upload');
+      return;
+    }
 
     const formData = new FormData();
     formData.append('file', file);
-    formData.append('isPublic', false);
-    formData.append('allowedGroups', JSON.stringify([]));
+    formData.append('isPublic', this.uploadFileIsPublic);
+    formData.append('allowedGroups', JSON.stringify(this.uploadFileGroups));
 
     app.request({
       method: 'POST',
@@ -166,6 +213,10 @@ export default class FlaLoaderPage extends Component {
       serialize: (raw) => raw,
     }).then(() => {
       app.alerts.show({ type: 'success' }, 'File uploaded successfully');
+      // Reset form
+      if (fileInput) fileInput.value = '';
+      this.uploadFileIsPublic = false;
+      this.uploadFileGroups = [];
       this.loadData();
     }).catch(() => {
       app.alerts.show({ type: 'error' }, 'Failed to upload file');
