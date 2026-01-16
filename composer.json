@@ -1,0 +1,31 @@
+{
+    "name": "undertaker/fla-loader",
+    "description": "Flarum extension for external loader integration with time-limited roles and file management",
+    "type": "flarum-extension",
+    "license": "MIT",
+    "require": {
+        "flarum/core": "^1.2.0"
+    },
+    "authors": [
+        {
+            "name": "Undertaker",
+            "email": "undertaker@example.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Undertaker\\FlaLoader\\": "src/"
+        }
+    },
+    "extra": {
+        "flarum-extension": {
+            "title": "Fla Loader",
+            "category": "feature",
+            "icon": {
+                "name": "fas fa-download",
+                "backgroundColor": "#e74c3c",
+                "color": "#fff"
+            }
+        }
+    }
+}
