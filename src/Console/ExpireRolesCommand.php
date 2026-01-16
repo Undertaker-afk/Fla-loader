@@ -9,8 +9,15 @@ use Illuminate\Support\Facades\DB;
 
 class ExpireRolesCommand extends AbstractCommand
 {
-    protected $signature = 'fla-loader:expire-roles';
-    protected $description = 'Remove expired role assignments';
+    /**
+     * Configure the command.
+     */
+    protected function configure()
+    {
+        $this
+            ->setName('fla-loader:expire-roles')
+            ->setDescription('Remove expired role assignments');
+    }
 
     /**
      * @return void

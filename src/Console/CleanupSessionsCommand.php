@@ -8,8 +8,15 @@ use Illuminate\Support\Facades\DB;
 
 class CleanupSessionsCommand extends AbstractCommand
 {
-    protected $signature = 'fla-loader:cleanup-sessions';
-    protected $description = 'Remove expired session tokens';
+    /**
+     * Configure the command.
+     */
+    protected function configure()
+    {
+        $this
+            ->setName('fla-loader:cleanup-sessions')
+            ->setDescription('Remove expired session tokens');
+    }
 
     /**
      * @return void
